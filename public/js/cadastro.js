@@ -33,7 +33,7 @@ document.getElementById("cadastroForm").addEventListener("submit", async (e) => 
       setTimeout(() => notif.style.display = "none", 3000);
 
       document.getElementById("cadastroForm").reset();
-      setTimeout(() => window.location.href = "/public/index.html", 3200);
+      setTimeout(() => window.location.href = "/public/index.html", 1200);
     } else {
       alert("❌ " + data.message);
     }
