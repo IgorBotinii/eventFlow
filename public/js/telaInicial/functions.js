@@ -102,7 +102,7 @@ empresaBtn.addEventListener('click', async () => {
     if (data.temEmpresa) {
       alert('Você já tem uma empresa cadastrada.');
     } else {
-      window.location.href = '/public/cadastro_empresa.html';
+      window.location.href = '/public/cadastroEmpresarial.html';
     }
 
   } catch (error) {
