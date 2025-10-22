@@ -60,3 +60,53 @@ window.onclick = (e) => {
     modal.style.display = 'none'; 
   }
 };
+
+
+// BOTAO EMPRESARIAL
+const empresaBtn = document.querySelector('.empresa-btn');
+
+empresaBtn.addEventListener('click', async () => {
+  
+  const usuarioString = localStorage.getItem('usuario');
+  
+  if (!usuarioString) {
+    alert('Você precisa estar logado para acessar a área empresarial.');
+    window.location.href = '/public/login.html'; 
+    return;
+  }
+
+  const usuarioLogado = JSON.parse(usuarioString);
+  const codColaborador = usuarioLogado.cod_user;
+
+  if (!codColaborador) {
+    alert('Erro ao identificar seu usuário. Faça login novamente.');
+    localStorage.removeItem('usuario');
+    window.location.href = '/public/login.html';
+    return;
+  }
+
+  try {
+    const resposta = await fetch(`http://45.89.30.194:3211/verificar-empresa/${codColaborador}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!resposta.ok) {
+      throw new Error('Não foi possível verificar os dados da empresa.');
+    }
+
+    const data = await resposta.json();
+
+    if (data.temEmpresa) {
+      alert('Você já tem uma empresa cadastrada.');
+    } else {
+      window.location.href = '/public/cadastro_empresa.html';
+    }
+
+  } catch (error) {
+    console.error('Erro ao verificar empresa:', error);
+    alert('Erro de conexão. Não foi possível verificar sua empresa.');
+  }
+});
