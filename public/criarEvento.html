@@ -24,6 +24,18 @@
         <label for="nome_evento">Nome do Evento *</label>
         <input type="text" id="nome_evento" name="nome_evento" required>
       </div>
+      <div class="linha">
+        <div class="form-group">
+            <label for="nome_evento">Endereço*</label>
+            <input type="text" id="end_evento" name="end_evento" style="width: 503px;" required>
+        </div>
+      </div>
+      <div class="linha">
+        <div class="form-group">
+            <label for="nome_evento">Nome do Local*</label>
+            <input type="text" id="nome_local_evento" name="nome_local_evento" style="width: 503px;" required>
+        </div>
+      </div>
 
       <div class="linha">
         <div class="form-group">
@@ -59,15 +71,31 @@
       </button>
     </form>
   </main>
-
-  <script>
+<script>
     document.getElementById('formEvento').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(e.target);
+      // 1. Pega o codEmpresa do localStorage
+      const codEmpresa = localStorage.getItem('codEmpresaUser');
+
+      if (!codEmpresa) {
+        alert('❌ Erro: Empresa não encontrada. Faça o login novamente.');
+        return;
+      }
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      // 2. Anexa o codEmpresa ao FormData
+      formData.append('cod_empresa', codEmpresa);
+      
+      // Desabilita o botão para evitar cliques duplos
+      const submitButton = form.querySelector('.btn-enviar');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="ph ph-spinner-gap"></i> Cadastrando...';
 
       try {
-        const response = await fetch('/cadastrar-evento', {
+        const response = await fetch('http://45.89.30.194:3211/cadastrar-evento', {
           method: 'POST',
           body: formData
         });
@@ -78,11 +106,16 @@
           alert('✅ Evento cadastrado com sucesso!');
           window.location.href = '/public/empresa/dashboard.html';
         } else {
+          // Mostra o erro vindo do servidor
           alert('❌ Erro: ' + data.message);
         }
       } catch (err) {
         console.error('Erro ao enviar:', err);
-        alert('Erro ao cadastrar o evento.');
+        alert('Erro de conexão ao cadastrar o evento.');
+      } finally {
+        // Reabilita o botão
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<i class="ph ph-check-circle"></i> Cadastrar Evento';
       }
     });
   </script>
