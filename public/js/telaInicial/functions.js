@@ -100,7 +100,7 @@ empresaBtn.addEventListener('click', async () => {
     const data = await resposta.json();
 
     if (data.temEmpresa) {
-      alert('Você já tem uma empresa cadastrada.');
+      window.location.href = '/public/dashEstabelecimento.html';
     } else {
       window.location.href = '/public/cadastroEmpresarial.html';
     }
@@ -110,3 +110,9 @@ empresaBtn.addEventListener('click', async () => {
     alert('Erro de conexão. Não foi possível verificar sua empresa.');
   }
 });
+
+function sairSistema(){
+        window.location.href = '/public/index.html';
+        localStorage.clear();
+
+}

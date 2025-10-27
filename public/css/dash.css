@@ -657,3 +657,24 @@ body {
   }
   .form-row { flex-direction: column; gap: 0; }
 }
+ .user-actions {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 1.5rem;
+      align-items: center;
+  }
+  
+  .empresa-btn {
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      color: white;
+      border-radius: 25px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+  }
+
+  .empresa-btn:hover {
+      opacity: 0.85;
+  }

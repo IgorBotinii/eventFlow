@@ -20,9 +20,13 @@
       <a href="#" class="logo"><i class="ph-fill ph-buildings"></i> Painel da Empresa</a>
     </div>
     <div class="header-right">
-
+      <div class="user-actions" style="margin-left: -175px;position: absolute;">
+      <button class="empresa-btn" onclick="abrirAreaCliente()">Área do Cliente</button>
+      <i class="ph ph-heart"></i>
+      <i id="profileIcon" class="ph ph-user-circle"></i>
+    </div>
       <div class="user-profile" id="userProfile">
-        <img src="https://picsum.photos/40/40?random=user" alt="User">
+        <img src="https://static.vecteezy.com/ti/vetor-gratis/p1/5911374-empresario-pessoa-icone-empresario-avatar-usuario-menino-gratis-vetor.jpg" alt="User">
         <span>Olá, Admin</span>
         <i class="ph ph-caret-down"></i>
         <div class="dropdown-menu" id="dropdownMenu">
@@ -196,6 +200,8 @@
   <div class="modal-overlay" id="modalEditarPerfil">
     </div>
 
-  <script src="/public/js/dash.js"></script>
+  <script src="/public/js/Empresas/dash.js"></script>
+  <script src="/public/auth.js"></script>
+
 </body>
 </html>
