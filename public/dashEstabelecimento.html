@@ -40,13 +40,13 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <h2>Menu</h2>
+      <h2>Ações</h2>
       <button class="close-menu" id="closeMenu">
         <i class="ph ph-x"></i>
       </button>
     </div>
     <nav>
-      <a href="#" class="active"><i class="ph ph-house"></i> Dashboard</a>
+      <a href="#"><i class="ph ph-house"></i> Dashboard</a>
       <a href="#"><i class="ph ph-calendar"></i> Meus Eventos</a>
       <a href="#" id="btnCriarEvento"><i class="ph ph-calendar-plus"></i> Criar Evento</a>
       <a href="#"><i class="ph ph-chart-line"></i> Relatórios</a>
@@ -155,47 +155,72 @@
         </aside> </div> </section>
   </main>
 
-  <div class="modal-overlay" id="modalCriarEvento">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="ph ph-calendar-plus"></i> Criar Novo Evento</h2>
-        <button class="modal-close"><i class="ph ph-x"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="createEventForm">
+<div class="modal-overlay" id="modalCriarEvento">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="ph ph-calendar-plus"></i> Criar Novo Evento</h2>
+      <button class="modal-close"><i class="ph ph-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="formEvento" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="nome_evento">Nome do Evento *</label>
+          <input type="text" id="nome_evento" name="nome_evento" required>
+        </div>
+
+        <div class="linha">
           <div class="form-group">
-            <label for="eventName">Nome do Evento</label>
-            <input type="text" id="eventName" placeholder="Ex: Festival de Verão" required>
+            <label for="end_evento">Endereço *</label>
+            <input type="text" id="end_evento" name="end_evento" required>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="eventDate">Data</label>
-              <input type="date" id="eventDate" required>
-            </div>
-            <div class="form-group">
-              <label for="eventPrice">Preço (R$)</label>
-              <input type="number" id="eventPrice" placeholder="Ex: 50.00" step="0.01" min="0">
-            </div>
+        </div>
+
+        <div class="linha">
+          <div class="form-group">
+            <label for="nome_local_evento">Nome do Local *</label>
+            <input type="text" id="nome_local_evento" name="nome_local_evento" required>
+          </div>
+        </div>
+
+        <div class="linha">
+          <div class="form-group">
+            <label for="limite_pessoas">Limite de Pessoas *</label>
+            <input type="number" id="limite_pessoas" name="limite_pessoas" min="1" required>
           </div>
           <div class="form-group">
-            <label for="eventCategory">Categoria</label>
-            <select id="eventCategory">
-              <option value="show">Show</option>
-              <option value="festival">Festival</option>
-              <option value="teatro">Teatro</option>
-              <option value="workshop">Workshop</option>
-              <option value="outro">Outro</option>
-            </select>
+            <label for="dt_evento">Data do Evento *</label>
+            <input type="date" id="dt_evento" name="dt_evento" required>
           </div>
           <div class="form-group">
-            <label for="eventDescription">Descrição</label>
-            <textarea id="eventDescription" rows="3" placeholder="Fale um pouco sobre o evento..."></textarea>
+            <label for="vl_ingresso">R$ Ingresso</label>
+            <input type="number" id="vl_ingresso" name="vl_ingresso" min="0" step="0.01" required>
           </div>
-          <button type="submit" class="btn-submit">Salvar Evento</button>
-        </form>
-      </div>
+        </div>
+
+        <div class="linha">
+          <div class="form-group">
+            <label for="hr_inicio_evento">Horário de Início *</label>
+            <input type="time"  id="hr_inicio_evento" name="hr_inicio_evento" required>
+          </div>
+          <div class="form-group">
+            <label for="hr_fim_evento">Horário de Término *</label>
+            <input type="time" id="hr_fim_evento" name="hr_fim_evento" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="link_doc_img">Imagem do Evento *</label>
+          <input type="file" id="link_doc_img" name="link_doc_img" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <i class="ph ph-check-circle"></i> Cadastrar Evento
+        </button>
+      </form>
     </div>
   </div>
+</div>
+
 
   <div class="modal-overlay" id="modalEditarPerfil">
     </div>

@@ -360,7 +360,7 @@ body {
   color: var(--text-secondary);
   font-size: 1.1rem;
 }
-.search-bar input {
+.search-bar input, time {
   background: transparent;
   border: none;
   outline: none;
@@ -582,6 +582,7 @@ body {
 .form-group input[type="date"],
 .form-group input[type="email"],
 .form-group input[type="number"],
+.form-group input[type="time"],
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -678,3 +679,16 @@ body {
   .empresa-btn:hover {
       opacity: 0.85;
   }
+.linha {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+input[type="time"] {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border: 1px solid #444;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* deixa o ícone branco em temas escuros */
+}
