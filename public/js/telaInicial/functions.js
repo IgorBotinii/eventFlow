@@ -125,23 +125,34 @@ async function carregarEventosGerais() {
   try {
     const response = await fetch('http://45.89.30.194:3211/eventos-geral');
     const data = await response.json();
-
     container.innerHTML = '';
-    eventosCache = data; // guarda os eventos no cache
+    eventosCache = data;
 
     if (!response.ok || !Array.isArray(data) || data.length === 0) {
       container.innerHTML = `<p style="text-align:center;color:#777;">Nenhum evento disponível no momento.</p>`;
       return;
     }
 
-    renderizarEventos(data);
+    // Busca presenças confirmadas do usuário logado (se estiver logado)
+    let eventosConfirmados = [];
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (usuario?.cod_user) {
+      const presencasResponse = await fetch(`http://45.89.30.194:3211/presencas/${usuario.cod_user}`);
+      if (presencasResponse.ok) {
+        const presencas = await presencasResponse.json();
+        eventosConfirmados = presencas.map(p => p.cod_evento);
+      }
+    }
+
+    renderizarEventos(data, eventosConfirmados);
   } catch (err) {
     console.error('Erro ao carregar eventos gerais:', err);
     container.innerHTML = '<p style="text-align:center;color:red;">Erro ao carregar os eventos.</p>';
   }
 }
 
-function renderizarEventos(lista) {
+
+function renderizarEventos(lista, confirmados = []) {
   const container = document.querySelector('.gallery-container');
   container.innerHTML = '';
 
@@ -161,6 +172,9 @@ function renderizarEventos(lista) {
 
     const card = document.createElement('div');
     card.classList.add('event-card');
+
+    const jaConfirmado = confirmados.includes(evento.cod_evento);
+
     card.innerHTML = `
       <div class="card-banner">
         <img src="${imagem}" alt="${evento.nome_evento}">
@@ -171,12 +185,54 @@ function renderizarEventos(lista) {
           <div class="info-item"><i class="ph ph-calendar"></i> ${dataFormatada}</div>
           <div class="info-item"><i class="ph ph-map-pin"></i> ${evento.cidade || 'Local não informado'}</div>
         </div>
-        <a class="btn-more">Confirmar Presença</a>
+        <button class="btn-more">${jaConfirmado ? 'Emitir Certificado 🎓' : 'Confirmar Presença'}</button>
       </div>
     `;
+
+    const botao = card.querySelector('.btn-more');
+
+    if (!jaConfirmado) {
+      botao.addEventListener('click', async () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        if (!usuario?.cod_user) {
+          alert('Você precisa estar logado para confirmar presença.');
+          return;
+        }
+
+        try {
+          const res = await fetch('http://45.89.30.194:3211/confirmar-presenca', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cod_user: usuario.cod_user,
+              cod_evento: evento.cod_evento,
+            }),
+          });
+
+          const data = await res.json();
+          alert(data.msg);
+
+          if (data.sucesso) {
+            botao.textContent = 'Emitir Certificado 🎓';
+            botao.disabled = true;
+          }
+        } catch (err) {
+          console.error('Erro ao confirmar presença:', err);
+          alert('Erro ao confirmar presença. Tente novamente.');
+        }
+      });
+    } else {
+      // Ação do botão se já estiver confirmado
+      botao.addEventListener('click', () => {
+        alert('🎓 Certificado em breve disponível para download.');
+      });
+    }
+
     container.appendChild(card);
   });
 }
+
+
 function aplicarFiltros() {
   const inputBusca = document.querySelector('.search-bar input').value.trim().toLowerCase();
   const selectCidade = document.querySelector('.navigation select').value;
@@ -206,3 +262,96 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.search-bar input').addEventListener('input', aplicarFiltros);
   document.querySelector('.navigation select').addEventListener('change', aplicarFiltros);
 });
+
+
+const modalConfirmados = document.getElementById('modalEventosConfirmados');
+const closeModalConfirmados = document.getElementById('closeModalConfirmados');
+const listaEventosConfirmados = document.getElementById('listaEventosConfirmados');
+
+// Quando clicar no menu lateral "Eventos Confirmados"
+document.querySelector('.sidebar-link i.ph-ticket').parentElement.addEventListener('click', async (e) => {
+  e.preventDefault();
+  await abrirModalEventosConfirmados();
+});
+
+closeModalConfirmados.onclick = () => {
+  modalConfirmados.style.display = 'none';
+};
+
+window.onclick = (e) => {
+  if (e.target === modalConfirmados) modalConfirmados.style.display = 'none';
+};
+
+async function abrirModalEventosConfirmados() {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (!usuario?.cod_user) {
+    alert('Você precisa estar logado.');
+    return;
+  }
+
+  modalConfirmados.style.display = 'block';
+  listaEventosConfirmados.innerHTML = '<p style="text-align:center;color:#aaa;">Carregando...</p>';
+
+  try {
+    const res = await fetch(`http://45.89.30.194:3211/eventos-confirmados/${usuario.cod_user}`);
+    const data = await res.json();
+
+    listaEventosConfirmados.innerHTML = '';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      listaEventosConfirmados.innerHTML = `<p style="text-align:center;color:#777;">Nenhum evento confirmado ainda.</p>`;
+      return;
+    }
+
+    data.forEach(evento => {
+      const dataFormatada = evento.dt_evento
+        ? new Date(evento.dt_evento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        : '-';
+
+      const item = document.createElement('div');
+      item.classList.add('event-item');
+      item.innerHTML = `
+        <div>
+          <strong>${evento.nome_evento}</strong><br>
+          <small>${dataFormatada} - ${evento.cidade || 'Local não informado'}</small>
+        </div>
+        <button>Cancelar Presença</button>
+      `;
+
+      item.querySelector('button').addEventListener('click', async () => {
+        if (confirm(`Deseja realmente cancelar a presença no evento "${evento.nome_evento}"?`)) {
+          await cancelarPresenca(evento.cod_evento);
+          item.remove();
+        }
+      });
+
+      listaEventosConfirmados.appendChild(item);
+    });
+  } catch (err) {
+    console.error('Erro ao buscar eventos confirmados:', err);
+    listaEventosConfirmados.innerHTML = '<p style="text-align:center;color:red;">Erro ao carregar eventos.</p>';
+  }
+}
+
+async function cancelarPresenca(cod_evento) {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (!usuario?.cod_user) return;
+
+  try {
+    const res = await fetch('http://45.89.30.194:3211/cancelar-presenca', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cod_user: usuario.cod_user,
+        cod_evento
+      }),
+    });
+
+    const data = await res.json();
+    alert(data.msg || 'Presença cancelada.');
+
+  } catch (err) {
+    console.error('Erro ao cancelar presença:', err);
+    alert('Erro ao cancelar presença.');
+  }
+}
