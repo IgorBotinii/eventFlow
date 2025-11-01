@@ -155,7 +155,7 @@ async function carregarEventosGerais() {
             <div class="info-item"><i class="ph ph-calendar"></i> ${dataFormatada}</div>
             <div class="info-item"><i class="ph ph-map-pin"></i> ${evento.cidade || 'Local não informado'}</div>
           </div>
-          <a href="#" class="btn-more">Confirmar Presença</a>
+          <a class="btn-more">Confirmar Presença</a>
         </div>
       `;
 
