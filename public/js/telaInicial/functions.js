@@ -116,3 +116,59 @@ function sairSistema(){
         localStorage.clear();
 
 }
+async function carregarEventosGerais() {
+  const container = document.querySelector('.gallery-container');
+  container.innerHTML = '<p style="text-align:center;color:#aaa;">Carregando eventos...</p>';
+
+  try {
+    const response = await fetch('http://45.89.30.194:3211/eventos-geral');
+    const data = await response.json();
+
+    container.innerHTML = ''; // limpa antes de renderizar
+
+    if (!response.ok || !Array.isArray(data) || data.length === 0) {
+      container.innerHTML = `
+        <p style="text-align:center;color:#777;">Nenhum evento disponível no momento.</p>`;
+      return;
+    }
+
+    data.forEach(evento => {
+      // formata data (ex: 2025-11-01 → 01/11/2025)
+      const dataFormatada = evento.dt_evento
+        ? new Date(evento.dt_evento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        : '-';
+
+      const imagem =
+        evento.link_imagem && evento.link_imagem.trim() !== ''
+          ? evento.link_imagem
+          : 'https://cdn-icons-png.flaticon.com/512/2748/2748558.png'; // imagem padrão
+
+      const card = document.createElement('div');
+      card.classList.add('event-card');
+      card.innerHTML = `
+        <div class="card-banner">
+          <img src="${imagem}" alt="${evento.nome_evento}">
+        </div>
+        <div class="card-content">
+          <h3 class="event-name">${evento.nome_evento || 'Evento sem nome'}</h3>
+          <div class="event-info">
+            <div class="info-item"><i class="ph ph-calendar"></i> ${dataFormatada}</div>
+            <div class="info-item"><i class="ph ph-map-pin"></i> ${evento.cidade || 'Local não informado'}</div>
+          </div>
+          <a href="#" class="btn-more">Confirmar Presença</a>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error('Erro ao carregar eventos gerais:', err);
+    container.innerHTML =
+      '<p style="text-align:center;color:red;">Erro ao carregar os eventos.</p>';
+  }
+}
+
+// =============================
+// 🚀 Executa automaticamente ao carregar a página
+// =============================
+document.addEventListener('DOMContentLoaded', carregarEventosGerais);
