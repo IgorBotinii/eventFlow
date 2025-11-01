@@ -224,10 +224,23 @@ function renderizarEventos(lista, confirmados = []) {
     } else {
       // Ação do botão se já estiver confirmado
       botao.addEventListener('click', () => {
-        alert('🎓 Certificado em breve disponível para download.');
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        if (!usuario?.cod_user) {
+          alert('Você precisa estar logado para gerar o certificado.');
+          return;
+        }
+
+        // Salva as informações necessárias para a tela do certificado
+        localStorage.setItem('certificado_info', JSON.stringify({
+          cod_user: usuario.cod_user,
+          nome_user: usuario.nome_user,
+          cod_evento: evento.cod_evento
+        }));
+
+        // Redireciona para a página do certificado
+        window.location.href = '/public/certificado.html';
       });
     }
-
     container.appendChild(card);
   });
 }
