@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (response.ok) {
           alert('✅ Evento cadastrado com sucesso!');
+          carregarTabelaEventos()
           modalCriarEvento.classList.remove('active');
           formEvento.reset();
         } else {
@@ -76,17 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-
-
-
-
-
 // Carregar tabela de eventos
 
-// ============================
-// 🔄 Carregar tabela de eventos
-// ============================
 async function carregarTabelaEventos() {
   try {
     const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
