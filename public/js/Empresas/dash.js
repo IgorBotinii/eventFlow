@@ -113,6 +113,7 @@ async function carregarTabelaEventos() {
         <td>${evento.hr_inicio_evento ? evento.hr_inicio_evento.slice(0,5) : '-'}</td>
         <td>${evento.hr_fim_evento ? evento.hr_fim_evento.slice(0,5) : '-'}</td>
         <td>${evento.limite_pessoas || '-'}</td>
+        <td>${evento.cidade || '-'}</td>
         <td style="text-align:center;">
           <button class="btn-excluir" onclick="excluirEvento(${evento.cod_evento})">❌</button>
         </td>

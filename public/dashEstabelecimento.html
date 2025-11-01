@@ -70,6 +70,7 @@
                   <th>Hr Inicio</th>
                   <th>Hr fim</th>
                   <th>Limite Pessoas</th>
+                  <th>Cidade</th>
                   <th></th>
                 </tr>
               </thead>
@@ -114,10 +115,19 @@
               <label for="limite_pessoas">Valor Ingresso *</label>
               <input type="text" id="vl_ingresso" name="vl_ingresso"  required>
             </div>
-            
+          </div>
+          <div class="linha">
             <div class="form-group">
               <label for="dt_evento">Data do Evento *</label>
               <input type="date" id="dt_evento" name="dt_evento" required>
+            </div>
+            <div class="form-group">
+              <label for="dt_evento">Cidade</label>
+              <select id="cidade" name="cidade" required>
+                <option>São Paulo</option>
+                <option>Rio de Janeiro</option>
+                <option>Belo Horizonte</option>
+              </select>
             </div>
           </div>
 
