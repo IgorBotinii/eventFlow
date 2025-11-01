@@ -76,3 +76,98 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
+
+
+
+// Carregar tabela de eventos
+
+// ============================
+// 🔄 Carregar tabela de eventos
+// ============================
+async function carregarTabelaEventos() {
+  try {
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const codEmpresa = usuario.cod_empresa;
+
+    if (!codEmpresa) {
+      console.error('❌ Código da empresa não encontrado no localStorage.');
+      return;
+    }
+
+    const response = await fetch('http://45.89.30.194:3211/eventos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cod_empresa: codEmpresa })
+    });
+
+    const data = await response.json();
+    const tabela = document.getElementById('eventList');
+    tabela.innerHTML = '';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      tabela.innerHTML = `<tr><td colspan="6" style="text-align:center;">Nenhum evento encontrado</td></tr>`;
+      return;
+    }
+
+    // Preenche a tabela
+    data.forEach(evento => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${evento.nome_evento || '-'}</td>
+        <td>${formatarData(evento.dt_evento)}</td>
+        <td>${evento.hr_inicio_evento ? evento.hr_inicio_evento.slice(0,5) : '-'}</td>
+        <td>${evento.hr_fim_evento ? evento.hr_fim_evento.slice(0,5) : '-'}</td>
+        <td>${evento.limite_pessoas || '-'}</td>
+        <td style="text-align:center;">
+          <button class="btn-excluir" onclick="excluirEvento(${evento.cod_evento})">❌</button>
+        </td>
+      `;
+      tabela.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('⚠️ Erro ao carregar eventos:', err);
+  }
+}
+
+function formatarData(dataStr) {
+  if (!dataStr) return '-';
+  const data = new Date(dataStr);
+  return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+}
+
+async function excluirEvento(cod_evento) {
+  if (!confirm('Deseja realmente excluir este evento?')) return;
+
+  try {
+    const response = await fetch('http://45.89.30.194:3211/excluir-evento', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cod_evento })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('✅ Evento excluído com sucesso!');
+      carregarTabelaEventos(); // atualiza a tabela
+    } else {
+      alert('❌ Erro: ' + (data.message || 'Falha ao excluir evento.'));
+    }
+  } catch (err) {
+    console.error('Erro ao excluir evento:', err);
+    alert('Erro de conexão ao tentar excluir o evento.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', carregarTabelaEventos);
+
+
+function formatarData(dataStr) {
+  if (!dataStr) return '-';
+  const data = new Date(dataStr);
+  return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+}
+
