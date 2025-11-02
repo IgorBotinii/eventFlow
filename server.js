@@ -528,7 +528,6 @@ app.put('/atualizar-usuario/:cod_user', async (req, res) => {
   }
 });
 
-
 app.get('/presencas/checar', (req, res) => {
   const { cod_user, cod_evento } = req.query;
   const sql = `
