@@ -74,14 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const resultado = await resposta.json();
 
-      if (resposta.ok) {
+     if (resposta.ok) {
         alert(resultado.message);
-        // Redireciona para a área empresarial ou home
+        if (resultado.empresaId) {
+          const usuario = JSON.parse(localStorage.getItem('usuario')) || {};
+          usuario.cod_empresa = resultado.empresaId;
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+        }
         window.location.href = '/public/telainicial.html'; 
       } else {
         alert(resultado.message);
       }
-
     } catch (error) {
       console.error('Erro ao enviar formulário:', error);
       alert('Erro de conexão. Tente novamente.');

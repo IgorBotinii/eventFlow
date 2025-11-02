@@ -211,6 +211,7 @@ function renderizarEventos(lista, confirmados = []) {
 
           const data = await res.json();
           alert(data.msg);
+          window.location.reload();
 
           if (data.sucesso) {
             botao.textContent = 'Emitir Certificado 🎓';
@@ -335,6 +336,7 @@ async function abrirModalEventosConfirmados() {
         if (confirm(`Deseja realmente cancelar a presença no evento "${evento.nome_evento}"?`)) {
           await cancelarPresenca(evento.cod_evento);
           item.remove();
+          window.location.reload()
         }
       });
 
