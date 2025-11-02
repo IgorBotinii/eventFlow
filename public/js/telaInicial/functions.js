@@ -368,3 +368,85 @@ async function cancelarPresenca(cod_evento) {
     alert('Erro ao cancelar presença.');
   }
 }
+/**
+ * Preenche o formulário de edição de perfil com os dados do usuário logado.
+ */
+function preencherCamposPerfil() {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+  if (!usuario) {
+    console.error("Usuário não encontrado no localStorage!");
+    return;
+  }
+
+  // Preenche os campos
+  document.getElementById("nome").value = usuario.nome_user || "";
+  document.getElementById("email").value = usuario.email_user || "";
+  document.getElementById("senha").value = ""; // senha sempre em branco
+}
+
+/**
+ * Atualiza os dados do perfil no banco e no localStorage.
+ */
+async function salvarPerfil() {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  if (!usuario) {
+    alert("Usuário não encontrado no localStorage!");
+    return;
+  }
+
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+
+  if (!nome || !email) {
+    alert("Preencha nome e e-mail corretamente.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://45.89.30.194:3211/atualizar-usuario/${usuario.cod_user}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome_user: nome,
+        email_user: email,
+        senha
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Perfil atualizado com sucesso!");
+
+      // Atualiza os dados no localStorage
+      usuario.nome_user = nome;
+      usuario.email_user = email;
+      localStorage.setItem("usuario", JSON.stringify(usuario));
+
+    } else {
+      alert(data.message || "Erro ao atualizar perfil.");
+    }
+  } catch (err) {
+    console.error("Erro ao atualizar perfil:", err);
+    alert("Erro ao conectar ao servidor.");
+  }
+}
+
+/**
+ * Abre o modal de edição de perfil e preenche os dados do usuário.
+ */
+function abrirModalPerfil() {
+  preencherCamposPerfil();
+  const modal = document.getElementById("profileModal");
+  if (modal) modal.style.display = "block";
+}
+
+/**
+ * Fecha o modal de edição de perfil.
+ */
+function fecharModalPerfil() {
+  const modal = document.getElementById("profileModal");
+  if (modal) modal.style.display = "none";
+}

@@ -87,21 +87,21 @@
 
   </main>
 
-  <div id="profileModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2>Editar Perfil</h2>
-      <form id="profileForm">
-        <label>Nome:</label>
-        <input type="text" id="nome" placeholder="Seu nome">
-        <label>E-mail:</label>
-        <input type="email" id="email" placeholder="Seu e-mail">
-        <label>Senha:</label>
-        <input type="password" id="senha" placeholder="Sua senha">
-        <button type="submit">Salvar</button>
-      </form>
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h2>Editar Perfil</h2>
+        <form id="profileForm">
+          <label>Nome:</label>
+          <input type="text" id="nome" placeholder="Seu nome">
+          <label>E-mail:</label>
+          <input type="email" id="email" placeholder="Seu e-mail">
+          <label>Senha:</label>
+          <input type="password" id="senha" placeholder="Sua senha">
+          <button type="button" onclick="salvarPerfil()">Salvar</button>
+        </form>
+      </div>
     </div>
-  </div>
 
   <aside id="profileSidebar" class="profile-sidebar">
     <div class="sidebar-header">
@@ -126,7 +126,7 @@
   <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
 
-<script src="/public/js/telaInicial/functions.js?v=1"></script>
+<script src="/public/js/telaInicial/functions.js?v=2"></script>
 <script src="/public/auth.js"></script>
 </body>
 </html>
